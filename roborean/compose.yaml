@@ -6,15 +6,34 @@ services:
       POSTGRES_DB: roborean
     volumes:
       - roborean-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d roborean"]
+      interval: 2s
+      timeout: 3s
+      retries: 15
+
+  migrate:
+    build:
+      context: .
+      target: migrator
+    environment:
+      DATABASE_URL: postgresql://postgres:devpassword@db:5432/roborean
+    depends_on:
+      db:
+        condition: service_healthy
+
 
   app:
-    build: .
+    build: 
+      context: .
+      target: runner
     ports:
       - "3000:3000"
     environment:
       DATABASE_URL: postgresql://postgres:devpassword@db:5432/roborean
     depends_on:
-      - db
+      migrate:
+        condition: service_completed_successfully
 
 volumes:
   roborean-pgdata:
