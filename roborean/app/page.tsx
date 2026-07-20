@@ -24,7 +24,7 @@ export default async function Home() {
         />
         <button
           type="submit"
-          className="bg-gray-900 text-white rounded p-2 font-semibold"
+          className="bg-gray-900 text-white hover:bg-gray-600 rounded p-2 font-semibold"
         >
           Add word
         </button>
