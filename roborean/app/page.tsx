@@ -2,6 +2,7 @@ import { db } from "@/db";
 import { words } from "@/db/schema";
 import { addWord, deleteWord } from "./actions";
 
+export const dynamic = "force-dynamic"; //to obviate the query-prerendering issue, apparently.
 
 export default async function Home() {
   const allWords = await db.select().from(words);
