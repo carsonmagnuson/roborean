@@ -18,5 +18,4 @@ export async function addWord(formData: FormData) {
 
   revalidatePath("/");
 
-
-};
+}
