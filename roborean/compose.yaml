@@ -1,0 +1,20 @@
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_PASSWORD: devpassword
+      POSTGRES_DB: roborean
+    volumes:
+      - roborean-pgdata:/var/lib/postgresql/data
+
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://postgres:devpassword@db:5432/roborean
+    depends_on:
+      - db
+
+volumes:
+  roborean-pgdata:
