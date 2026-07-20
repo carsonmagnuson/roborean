@@ -14,7 +14,7 @@ services:
 
   migrate:
     build:
-      context: .
+      context: ./web
       target: migrator
     environment:
       DATABASE_URL: postgresql://postgres:devpassword@db:5432/roborean
@@ -25,7 +25,7 @@ services:
 
   app:
     build: 
-      context: .
+      context: ./web
       target: runner
     ports:
       - "3000:3000"
