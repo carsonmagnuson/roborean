@@ -1,6 +1,6 @@
 import { db } from "@/db";
 import { words } from "@/db/schema";
-import { addWord } from "./actions";
+import { addWord, deleteWord } from "./actions";
 
 
 export default async function Home() {
@@ -31,9 +31,21 @@ export default async function Home() {
       </form>
       <ul className="space-y-3">
         {allWords.map((entry) => (
-          <li key={entry.id} className="p-4 rounded-lg border border-gray-200">
-            <strong className="text-lg font-semibold">{entry.word}</strong>:
-            <p className="text-gray-600">{entry.meaning}</p>
+          <li
+            key={entry.id}
+            className="p-4 rounded-lg border border-gray-200 flex items-start justify-between gap-4">
+            <div>
+              <strong className="text-lg font-semibold">{entry.word}</strong>:
+              <p className="text-gray-600">{entry.meaning}</p>
+            </div>
+            <form action={deleteWord}>
+              <input type="hidden" name="id" value={entry.id} />
+              <button
+                type="submit"
+                className="text-sm text-red-600 hover:text-red-800">
+                delete
+              </button>
+            </form>
           </li>
         ))}
       </ul>

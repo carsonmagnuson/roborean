@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { db } from "@/db";
 import { words } from "@/db/schema";
+import { eq } from "drizzle-orm";
 
 
 export async function addWord(formData: FormData) {
@@ -15,6 +16,18 @@ export async function addWord(formData: FormData) {
     target: words.word,
     set: { meaning },
   });
+
+  revalidatePath("/");
+
+}
+
+
+export async function deleteWord(formData: FormData) {
+  const id = Number(formData.get("id"));
+
+  if (!Number.isInteger(id)) return;
+
+  await db.delete(words).where(eq(words.id, id));
 
   revalidatePath("/");
 
