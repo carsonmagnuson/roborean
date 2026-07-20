@@ -11,7 +11,10 @@ export async function addWord(formData: FormData) {
 
   if (!word || !meaning) return;
 
-  await db.insert(words).values({ word, meaning });
+  await db.insert(words).values({ word, meaning }).onConflictDoUpdate({
+    target: words.word,
+    set: { meaning },
+  });
 
   revalidatePath("/");
 
