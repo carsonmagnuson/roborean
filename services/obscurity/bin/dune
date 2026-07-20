@@ -1,0 +1,4 @@
+(executable
+ (public_name obscurity)
+ (name main)
+ (libraries dream obscurity))
