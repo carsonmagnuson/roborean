@@ -6,7 +6,7 @@ let () =
     Dream.get "/" (fun _req ->
       Dream.html "obscurity service lives");
 
-    Dream.get "/score/:word" (fun req ->
+    Dream.get "/freq/:word" (fun req ->
       let word = Dream.param req "word" in
       let response =
         match Hashtbl.find_opt table word with
@@ -14,6 +14,18 @@ let () =
         | None -> Printf.sprintf {|{"word": "%s", "count": "not found in corpus"}|} word
       in
       Dream.json response);
+
+    Dream.get "/score/:word" (fun req ->
+      let word = Dream.param req "word" in
+      let response =
+        match Hashtbl.find_opt table word with
+        | Some count -> 
+            let c = Obscurity.obscurity (float_of_int count) 0_024_908_267_229.0 in 
+            Printf.sprintf {|{"word": "%s", "count": %f}|} word c
+        | None -> Printf.sprintf {|{"word": "%s", "count": "not found in corpus"}|} word
+      in
+      Dream.json response);
   ]
+
 
 
