@@ -11,7 +11,7 @@ let () =
       let response =
         match Hashtbl.find_opt table word with
         | Some count -> Printf.sprintf {|{"word": "%s", "count": %d}|} word count
-        | None -> Printf.sprintf {|{"word": "%s", "count": null}|} word
+        | None -> Printf.sprintf {|{"word": "%s", "count": "not found in corpus"}|} word
       in
       Dream.json response);
   ]
