@@ -22,6 +22,9 @@ services:
       db:
         condition: service_healthy
 
+  obscurity:
+    build:
+      context: ./services/obscurity
 
   app:
     build: 
@@ -31,7 +34,10 @@ services:
       - "3000:3000"
     environment:
       DATABASE_URL: postgresql://postgres:devpassword@db:5432/roborean
+      OBSCURITY_URL: http://obscurity:8080
     depends_on:
+      obscurity:
+        condition: service_started
       migrate:
         condition: service_completed_successfully
 
