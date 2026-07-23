@@ -20,7 +20,7 @@ let () =
       let response =
         match Hashtbl.find_opt table word with
         | Some count -> 
-            let c = Obscurity.obscurity (float_of_int count) 0_024_908_267_229.0 in 
+            let c = Obscurity.obscurity (float_of_int count) 1_024_908_267_229.0 in 
             Printf.sprintf {|{"word": "%s", "score": %f}|} word c
         | None -> Printf.sprintf {|{"word": "%s", "score": "not found in corpus"}|} word
       in
