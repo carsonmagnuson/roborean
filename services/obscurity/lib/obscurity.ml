@@ -1,7 +1,7 @@
 (**
    [obscurity count total] maps a word's corpus frequency to an obscurity score that acts similar to the inverse of a Zipf score.
  *)
-let obscurity count total = count /. total *. 1e9 |> log10 |> ( -. ) 7.
+let obscurity count total = count /. total *. 1e9 |> log10 |> ( -. ) 8.
 
 (** 
     [load_table path] reads a tab-separated [word\tcount] frequency file
