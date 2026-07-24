@@ -62,14 +62,39 @@ let fetch_entry ~api_key word =
   | Error e -> Lwt.return (Error e)
   | Ok body -> Lwt.return (Ok body)
 
-
-let short_def body =
-  let json = Yojson.Basic.from_string body in
-  let open Yojson.Basic.Util in 
-  json |> to_list |> List.hd |> member "shortdef" |> to_list |> List.map to_string
-
-
-  
-
-
+(** [short_def body] extracts the first entry's short definitions from a raw
+    Merriam-Webster collegiate JSON response. Returns [Ok defs] on success,
+    [Error `Not_found_with_suggestions] when MW returns spelling suggestions,
+    or [Error `Bad_response] on any unexpected shape. *)
+let short_def word body =
+  let open Yojson.Basic.Util in
+  let headword_matches entry =
+    match entry |> member "meta" |> member "id" with
+    | `String id ->
+        (match String.split_on_char ':' id with
+         | base :: _ -> String.lowercase_ascii base = String.lowercase_ascii word
+         | [] -> false)
+    | _ -> false
+  in
+  let strings_of = function
+    | `List l -> List.filter_map (function `String s -> Some s | _ -> None) l
+    | _ -> []
+  in
+  match Yojson.Basic.from_string body with
+  | `List (`Assoc _ :: _ as entries) ->
+      let matched =
+        List.filter_map
+          (fun entry ->
+            if headword_matches entry then
+              let pos =
+                match entry |> member "fl" with `String s -> s | _ -> ""
+              in
+              Some (pos, strings_of (entry |> member "shortdef"))
+            else None)
+          entries
+      in
+      Ok matched
+  | `List (`String _ :: _) -> Error `Not_found_with_suggestions
+  | _ -> Error `Bad_response
+  | exception Yojson.Json_error _ -> Error `Bad_response
 
