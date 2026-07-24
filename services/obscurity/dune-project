@@ -19,7 +19,7 @@
  (name obscurity)
  (synopsis "A short synopsis")
  (description "A longer description")
- (depends ocaml dune dream cohttp-lwt-unix yojson)
+ (depends ocaml dune dream cohttp-lwt-unix yojson dotenv)
  (tags
   ("add topics" "to describe" your project)))
 

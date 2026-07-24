@@ -15,6 +15,7 @@ depends: [
   "dream"
   "cohttp-lwt-unix"
   "yojson"
+  "dotenv"
   "odoc" {with-doc}
 ]
 build: [
@@ -31,5 +32,5 @@ build: [
     "@doc" {with-doc}
   ]
 ]
-dev-repo: "git+https://github.com/username/reponame.git"
+dev-repo: "git+https://github.com/carsonmagnuson/roborean.git"
 x-maintenance-intent: ["(latest)"]
