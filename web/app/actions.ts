@@ -10,7 +10,7 @@ export async function addWord(formData: FormData) {
   const word = String(formData.get("word") ?? "").trim();
   const meaning = String(formData.get("meaning") ?? "").trim();
 
-  if (!word || !meaning) return;
+  if (!word) return;
 
   await db.insert(words).values({ word, meaning }).onConflictDoUpdate({
     target: words.word,

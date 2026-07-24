@@ -5,6 +5,14 @@ import { getScore } from "@/lib/score";
 
 export const dynamic = "force-dynamic"; //to obviate the query-prerendering issue, apparently.
 
+export function tierStyles(score: number | null): string {
+    if (score === null) return "border-l-amber-400 text-amber-300";      // lost
+    if (score < 3) return "border-l-neutral-500 text-neutral-400";       // common
+    if (score < 5) return "border-l-green-500 text-green-300";           // uncommon
+    if (score < 6.5) return "border-l-blue-500 text-blue-300";           // rare
+    return "border-l-violet-500 text-violet-300";                         // mythic
+}
+
 export default async function Home() {
   const allWords = await db.select().from(words);
   const scored = await Promise.all(
@@ -13,9 +21,11 @@ export default async function Home() {
       score: await getScore(entry.word),
     }))
   );
+
+
   return (
     <main className="max-w-2xl mx-auto p-8">
-      <h1 className="text-3xl font-bold mb-2">Roborean</h1>
+      <h1 className="text-8xl font-serif mb-2">ROBOREAN</h1>
       <p className="text-sm text-gray-500 mb-6">{allWords.length} words saved</p>
       <form action={addWord} className="mb-8 flex flex-col gap-2">
         <input
@@ -24,16 +34,9 @@ export default async function Home() {
           required
           className="border border-gray-300 rounded p-2"
         />
-        <input
-          name="meaning"
-          placeholder="meaning"
-          required
-          className="border border-gray-300 rounded p-2"
-        />
         <button
           type="submit"
-          className="bg-gray-900 text-white hover:bg-gray-600 rounded p-2 font-semibold"
-        >
+          className="bg-gray-900 text-white hover:bg-gray-600 rounded p-2 font-semibold">
           Add word
         </button>
       </form>
@@ -41,9 +44,9 @@ export default async function Home() {
         {scored.map((entry) => (
           <li
             key={entry.id}
-            className="p-4 rounded-lg border border-gray-200 flex items-start justify-between gap-4">
+            className={`p-4 rounded-lg border ${tierStyles(entry.score)} flex items-start justify-between gap-4`}>
             <div>
-              <strong className="text-lg font-semibold">
+              <strong className="text-5xl font-serif">
                 {entry.word}
 
                 {entry.score !== null && (
