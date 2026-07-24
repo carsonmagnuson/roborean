@@ -5,22 +5,20 @@
 (generate_opam_files true)
 
 (source
- (github username/reponame))
+ (github carsonmagnuson/roborean))
 
-(authors "Author Name <author@example.com>")
+(authors "Carson Glines <carsonmagnuson@gmail.com>")
 
-(maintainers "Maintainer Name <maintainer@example.com>")
+(maintainers "Carson Glines <carsonmagnuson@gmail.com>")
 
-(license LICENSE)
-
-(documentation https://url/to/documentation)
+(license "AGPL-3.0-or-later")
 
 (package
  (name obscurity)
- (synopsis "A short synopsis")
- (description "A longer description")
- (depends ocaml dune dream)
+ (synopsis "Word obscurity scoring and Merriam-Webster dictionary proxy")
+ (description "An OCaml/Dream microservice for the Roborean word-collection app. Scores word obscurity from corpus frequency data and proxies dictionary definitions from Merriam-Webster's API.")
+ (depends ocaml dune dream cohttp-lwt-unix yojson dotenv)
  (tags
-  ("add topics" "to describe" your project)))
+  ("ocaml" "dream" "dictionary" "nlp" "microservice")))
 
 ; See the complete stanza docs at https://dune.readthedocs.io/en/stable/reference/dune-project/index.html

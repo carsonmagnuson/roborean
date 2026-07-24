@@ -1,2 +1,3 @@
 (library
- (name obscurity))
+ (name obscurity)
+ (libraries cohttp-lwt-unix yojson))
