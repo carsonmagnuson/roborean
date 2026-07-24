@@ -1,4 +1,13 @@
 let table = Obscurity.load_table "data/count_1w.txt"
+let ( let* ) = Lwt.bind 
+
+
+let () = Dotenv.export () |> ignore
+let api_key = 
+  match Sys.getenv_opt "MW_API_KEY" with
+  | Some value -> value
+  | None -> failwith "No API Key"
+
 let () = 
   Dream.run ~interface:"0.0.0.0" ~port:8080
   @@ Dream.logger
@@ -25,7 +34,13 @@ let () =
         | None -> Printf.sprintf {|{"word": "%s", "score": "not found in corpus"}|} word
       in
       Dream.json response);
-  ]
 
+    Dream.get "/define/:word" (fun req ->
+      let word = Dream.param req "word" in
+      let* result = Obscurity.fetch_entry ~api_key word in
+      match result with
+      | Ok body -> Dream.json body
+      | Error e -> Dream.json (Printf.sprintf {|{"error": "%s"}|} e))
+  ]
 
 
