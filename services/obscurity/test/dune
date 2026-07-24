@@ -1,3 +1,4 @@
 (test
  (name test_obscurity)
- (libraries obscurity))
+ (libraries obscurity)
+ (deps (glob_files fixtures/*.json)))

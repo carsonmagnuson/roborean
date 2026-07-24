@@ -13,7 +13,7 @@ let () =
   check "the scores near floor" 0.65
     (Obscurity.obscurity 23_135_851_162.0 total) 0.05;
 
-  (* corpus theoretical mythic rare: count 1 *)
+  (* corpus theoretical mythic/legendary/lost: count 1 *)
   check "rarest corpus word scores high" 11.01
     (Obscurity.obscurity 1.0 total) 0.1;
 
@@ -21,4 +21,10 @@ let () =
   assert (Obscurity.obscurity 1_000_000.0 total
           > Obscurity.obscurity 1_000_000_000.0 total);
 
+(* TODO: put in test for short_def function *)
+
+
   print_endline "all obscurity tests passed"
+
+
+
