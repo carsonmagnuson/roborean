@@ -39,8 +39,20 @@ let () =
       let word = Dream.param req "word" in
       let* result = Obscurity.fetch_entry ~api_key word in
       match result with
-      | Ok body -> Dream.json body
+      | Ok body -> (
+        match Obscurity.short_def word body with
+        | Ok entries ->
+          let entry_json (pos, senses) =
+            `Assoc [ ("pos", `String pos);
+                     ("senses", `List (List.map (fun s -> `String s) senses)) ]
+          in
+          Dream.json (Yojson.Basic.to_string
+            (`Assoc [ ("word", `String word);
+                      ("entries", `List (List.map entry_json entries)) ]))
+
+        | Error `Not_found_with_suggestions ->
+            Dream.json ~status:`Not_Found {|{"error": "no entry"}|}
+        | Error `Bad_response ->
+            Dream.json ~status:`Bad_Gateway {|{"error": "upstream shape"}|})
       | Error e -> Dream.json (Printf.sprintf {|{"error": "%s"}|} e))
   ]
-
-
