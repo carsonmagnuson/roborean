@@ -54,5 +54,5 @@ let () =
             Dream.json ~status:`Not_Found {|{"error": "no entry"}|}
         | Error `Bad_response ->
             Dream.json ~status:`Bad_Gateway {|{"error": "upstream shape"}|})
-      | Error e -> Dream.json (Printf.sprintf {|{"error": "%s"}|} e))
+      | Error e -> Dream.json ~status:`Internal_Server_Error  (Printf.sprintf {|{"error": "%s"}|} e))
   ]

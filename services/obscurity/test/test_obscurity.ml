@@ -24,8 +24,6 @@ let () =
   assert (Obscurity.obscurity 1_000_000.0 total
           > Obscurity.obscurity 1_000_000_000.0 total);
 
-(* TODO: put in test for short_def function *)
-
 
   let body =
       In_channel.with_open_text "fixtures/rocket.json" In_channel.input_all
