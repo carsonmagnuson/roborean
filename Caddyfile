@@ -1,0 +1,3 @@
+roborean.carsonmagnuson.com {
+    reverse_proxy app:3000
+}
