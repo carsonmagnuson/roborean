@@ -6,7 +6,6 @@ export const words = pgTable("words", {
   id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
   word: text("word").notNull().unique(),
   entries: jsonb("entries").$type<DictEntry[]>(),
-  meaning: text("meaning").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

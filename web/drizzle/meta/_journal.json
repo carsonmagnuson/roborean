@@ -15,6 +15,13 @@
       "when": 1785105526352,
       "tag": "0001_complete_warhawk",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1785114606661,
+      "tag": "0002_wooden_vector",
+      "breakpoints": true
     }
   ]
 }
