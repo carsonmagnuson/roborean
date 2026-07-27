@@ -6,22 +6,6 @@ import { words } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { fetchDefinition, getScore } from "@/lib/obscurity_util";
 
-
-export async function addWord(formData: FormData) {
-  const word = String(formData.get("word") ?? "").trim();
-  const meaning = String(formData.get("meaning") ?? "").trim();
-
-  if (!word) return;
-
-  await db.insert(words).values({ word, meaning }).onConflictDoUpdate({
-    target: words.word,
-    set: { meaning },
-  });
-
-  revalidatePath("/");
-
-}
-
 export async function lookupWord(word: string) {
   const normalized = word.trim().toLowerCase();
   if (!normalized) return null;
@@ -36,7 +20,7 @@ export async function lookupWord(word: string) {
 
     await db
       .insert(words)
-      .values({ word: normalized, entries, meaning: "" })
+      .values({ word: normalized, entries})
       .onConflictDoUpdate({ target: words.word, set: { entries } });
   }
 
@@ -44,14 +28,3 @@ export async function lookupWord(word: string) {
   return { word: normalized, score, entries };
 }
 
-
-export async function deleteWord(formData: FormData) {
-  const id = Number(formData.get("id"));
-
-  if (!Number.isInteger(id)) return;
-
-  await db.delete(words).where(eq(words.id, id));
-
-  revalidatePath("/");
-
-}
