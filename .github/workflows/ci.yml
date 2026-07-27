@@ -60,9 +60,6 @@ jobs:
       - name: Start the stack
         run: docker compose up -d --build
 
-      - name: Migrations applied
-        run: docker compose wait migrate
-
       - name: Wait for app
         run: |
           for i in $(seq 1 60); do
