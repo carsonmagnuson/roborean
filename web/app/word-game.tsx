@@ -11,13 +11,22 @@ type Result = {
   notFound?: boolean;
 };
 
+export function tierName(r: Result): string {
+  if (r.notFound) return "unknown";
+  if (r.score == null) return "lost";
+  if (r.score < 4) return "common";
+  if (r.score < 5) return "uncommon";
+  if (r.score < 6.5) return "rare";
+  return "mythic";
+}
 
-export function tierStyles(score: number | null): string {
-  if (score === null) return "border-l-amber-400 text-amber-300";      // lost
-  if (score < 4) return "border-l-neutral-500 text-neutral-400";       // common
-  if (score < 5) return "border-l-green-500 text-green-300";           // uncommon
-  if (score < 6.5) return "border-l-blue-500 text-blue-300";           // rare
-  return "border-l-violet-500 text-violet-300";                         // mythic
+export function tierStyles(r: Result): string {
+  if (r.notFound) return "border-l-neutral-700 text-neutral-500";     // unknown
+  if (r.score == null) return "border-l-amber-400 text-amber-300";    // lost
+  if (r.score < 4) return "border-l-neutral-500 text-neutral-400";    // common
+  if (r.score < 5) return "border-l-green-500 text-green-300";        // uncommon
+  if (r.score < 6.5) return "border-l-blue-500 text-blue-300";        // rare
+  return "border-l-violet-500 text-violet-300";                       // mythic
 }
 
 export default function WordGame() {
@@ -57,7 +66,10 @@ export default function WordGame() {
 
       <ul className="space-y-3">
         {results.map((r, i) => (
-          <li key={i} className={`p-4 rounded-lg border ${tierStyles(r.score)}`}>
+          <li key={i} className={`relative p-4 rounded-lg border ${tierStyles(r)}`}>
+            <span className="absolute top-3 right-3 rounded border border-current px-2 py-0.5 text-[10px] uppercase tracking-widest font-mono -rotate-3 opacity-70">
+              {tierName(r)}
+            </span>
             <strong className="text-2xl font-serif">{r.word}</strong>
             {r.notFound ? (
               <p className="text-gray-500 text-sm">not a word we know</p>
