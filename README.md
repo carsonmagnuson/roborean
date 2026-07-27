@@ -12,7 +12,7 @@ What you need:
 
 How to run the application:
 - clone the repository.
-- Insert your key (MW_API_KEY=\[YOUR KEY]) into a .env file in the root of the obscurity folder. 
+- Insert your API key (MW_API_KEY=\[YOUR KEY]) and a db password into a .env in the root directory similar to .env.example.
 - run:
 ```bash
 cd roborean
