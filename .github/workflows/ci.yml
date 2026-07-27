@@ -42,3 +42,52 @@ jobs:
       - uses: actions/checkout@v4
       - run: cp .env.example .env
       - run: docker compose build
+
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Write .env
+        env:
+          MW_API_KEY: ${{ secrets.MW_API_KEY }}
+        run: |
+          {
+            echo "POSTGRES_PASSWORD=$(openssl rand -hex 16)"
+            echo "MW_API_KEY=${MW_API_KEY}"
+          } > .env
+
+      - name: Start the stack
+        run: docker compose up -d --build
+
+      - name: Migrations applied
+        run: docker compose wait migrate
+
+      - name: Wait for app
+        run: |
+          for i in $(seq 1 60); do
+            if docker compose exec -T app wget -qO- http://localhost:3000/ >/dev/null 2>&1; then
+              echo "app is up"; exit 0
+            fi
+            sleep 5
+          done
+          echo "app never became ready"; exit 1
+
+      - name: Obscurity scores a word
+        run: |
+          docker compose exec -T app wget -qO- http://obscurity:8080/score/hello \
+            | tee /dev/stderr | grep -qE '"score": *[0-9]'
+
+      - name: Obscurity defines a word over HTTPS
+        run: |
+          docker compose exec -T app wget -qO- http://obscurity:8080/define/hello \
+            | tee /dev/stderr | grep -qE '"entries": *\[ *\{'
+
+
+      - name: Logs on failure
+        if: failure()
+        run: docker compose logs
+
+      - name: Tear down
+        if: always()
+        run: docker compose down -v
