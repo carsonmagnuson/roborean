@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 import { lookupWord } from "./actions";
 import type { DictEntry } from "@/db/schema";
 
@@ -33,6 +33,8 @@ export default function WordGame() {
   const [results, setResults] = useState<Result[]>([]);
   const [input, setInput] = useState("");
   const [isPending, startTransition] = useTransition();
+  const [flash, setFlash] = useState<string | null>(null);
+  const flashTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -40,6 +42,9 @@ export default function WordGame() {
     if (!word) return;
 
     if (results.some((r) => r.word === word)) {
+      if (flashTimer.current) clearTimeout(flashTimer.current);
+      setFlash(word);
+      flashTimer.current = setTimeout(() => setFlash(null), 700);
       setInput("");
       return;
     }
@@ -71,7 +76,11 @@ export default function WordGame() {
 
       <ul className="space-y-3">
         {results.map((r, i) => (
-          <li key={i} className={`relative p-4 rounded-lg border ${tierStyles(r)}`}>
+          <li
+            key={i}
+            className={`relative p-4 rounded-lg border transition-all duration-300 ${tierStyles(r)} ${flash === r.word ? "ring-2 ring-current scale-[1.02]" : ""
+              }`}
+          >
             <span className="absolute top-3 right-3 rounded border border-current px-2 py-0.5 text-[10px] uppercase tracking-widest font-mono -rotate-3 opacity-70">
               {tierName(r)}
             </span>
