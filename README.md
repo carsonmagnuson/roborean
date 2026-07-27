@@ -5,12 +5,14 @@ A simple word scoring application.
 
 
 What you need:
-- Docker Compose
-- Buildx (plugin)
-- An open port 3000
+- Docker Compose.
+- Buildx (plugin).
+- A [Merriam Webster](https://dictionaryapi.com/) API key (free!).
+- An open port 3000.
 
 How to run the application:
-- clone the repository
+- clone the repository.
+- Insert your key (MW_API_KEY=\[YOUR KEY]) into a .env file in the root of the obscurity folder. 
 - run:
 ```bash
 cd roborean
