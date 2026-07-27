@@ -14,6 +14,7 @@ depends: [
   "dune" {>= "3.24"}
   "dream"
   "cohttp-lwt-unix"
+  "tls-lwt"
   "yojson"
   "dotenv"
   "odoc" {with-doc}
