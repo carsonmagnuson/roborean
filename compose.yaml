@@ -1,6 +1,7 @@
 services:
   db:
     image: postgres:17
+    restart: unless-stopped
     environment:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?}
       POSTGRES_DB: roborean
@@ -11,7 +12,6 @@ services:
       interval: 2s
       timeout: 3s
       retries: 15
-
   migrate:
     build:
       context: ./web
@@ -25,13 +25,15 @@ services:
   obscurity:
     build:
       context: ./services/obscurity
+    restart: unless-stopped
     environment:
-      MW_API_KEY:
+      MW_API_KEY: ${MW_API_KEY:?}
 
   app:
     build: 
       context: ./web
       target: runner
+    restart: unless-stopped
     ports:
       - "3000:3000"
     environment:
