@@ -36,8 +36,13 @@ export default function WordGame() {
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    const word = input.trim();
+    const word = input.trim().toLowerCase();
     if (!word) return;
+
+    if (results.some((r) => r.word === word)) {
+      setInput("");
+      return;
+    }
 
     startTransition(async () => {
       const result = await lookupWord(word);
