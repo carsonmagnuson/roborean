@@ -17,7 +17,7 @@
  (name obscurity)
  (synopsis "Word obscurity scoring and Merriam-Webster dictionary proxy")
  (description "An OCaml/Dream microservice for the Roborean word-collection app. Scores word obscurity from corpus frequency data and proxies dictionary definitions from Merriam-Webster's API.")
- (depends ocaml dune dream cohttp-lwt-unix yojson dotenv)
+ (depends ocaml dune dream cohttp-lwt-unix tls-lwt yojson dotenv)
  (tags
   ("ocaml" "dream" "dictionary" "nlp" "microservice")))
 
