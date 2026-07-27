@@ -1,7 +1,7 @@
 import { db } from "@/db";
 import { words } from "@/db/schema";
 import { addWord, deleteWord } from "./actions";
-import { getScore } from "@/lib/score";
+import { getScore } from "@/lib/obscurity_util";
 
 export const dynamic = "force-dynamic"; //to obviate the query-prerendering issue, apparently.
 
