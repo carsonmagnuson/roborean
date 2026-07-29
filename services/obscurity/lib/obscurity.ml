@@ -57,10 +57,7 @@ let fetch_entry ~api_key word =
       "https://www.dictionaryapi.com/api/v3/references/collegiate/json/%s?key=%s"
       (Uri.pct_encode word) api_key
   in
-  let* result = http_get url in 
-  match result with
-  | Error e -> Lwt.return (Error e)
-  | Ok body -> Lwt.return (Ok body)
+  http_get url
 
 (** [short_def body] extracts the first entry's short definitions from a raw
     Merriam-Webster collegiate JSON response. Returns [Ok defs] on success,
