@@ -47,6 +47,13 @@ let http_get url =
     ))
 
 
+let fetch_muse word =
+  let url =
+    Printf.sprintf
+    "https://api.datamuse.com/words?sp=%s&md=f&max=1"
+    (Uri.pct_encode word)
+  in
+  http_get url
 
 (*
 API call with the api key and chosen word.
