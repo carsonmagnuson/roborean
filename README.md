@@ -1,7 +1,7 @@
 # ROBOREAN
 >strong and sturdy; like an oak tree.
 
-![Roborean Preview](roborean-preview.png)
+![Roborean Preview](roborean-preview-mobile.png)
 
 A simple word [scoring application](roborean.carsonmagnuson.com) (live).
 
