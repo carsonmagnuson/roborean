@@ -12,20 +12,22 @@ type Result = {
 };
 
 export function tierName(r: Result): string {
-  if (r.notFound) return "unknown";
-  if (r.score == null) return "lost";
+  if (r.notFound || r.score == null) return "unknown";
+  if (r.score > 9.9) return "lost";
   if (r.score < 4) return "common";
   if (r.score < 5) return "uncommon";
-  if (r.score < 6.5) return "rare";
+  if (r.score < 7) return "rare";
+  if (r.score < 8.1) return "legendary";
   return "mythic";
 }
 
 export function tierStyles(r: Result): string {
-  if (r.notFound) return "border-l-neutral-700 text-neutral-500";     // unknown
-  if (r.score == null) return "border-l-amber-400 text-amber-300";    // lost
+  if (r.notFound || r.score == null) return "border-l-neutral-700 text-neutral-500";     // unknown
+  if (r.score > 9.9) return "border-l-amber-400 text-amber-300";    // lost
   if (r.score < 4) return "border-l-neutral-500 text-neutral-400";    // common
   if (r.score < 5) return "border-l-green-500 text-green-300";        // uncommon
-  if (r.score < 6.5) return "border-l-blue-500 text-blue-300";        // rare
+  if (r.score < 7) return "border-l-blue-500 text-blue-300";        // rare
+  if (r.score < 8.1) return "border-1-fuchsia-500 text-fuchsia-300";   // legendary
   return "border-l-violet-500 text-violet-300";                       // mythic
 }
 
