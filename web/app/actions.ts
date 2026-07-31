@@ -1,6 +1,5 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import { db } from "@/db";
 import { words } from "@/db/schema";
 import { eq } from "drizzle-orm";
@@ -13,10 +12,15 @@ export async function lookupWord(word: string) {
   const [cached] = await db.select().from(words).where(eq(words.word, normalized));
 
   let entries = cached?.entries ?? null;
+  const score = await getScore(normalized);
 
   if (!entries) {
     entries = await fetchDefinition(normalized);
-    if (!entries) return { word: normalized, notFound: true as const };
+    if (!entries) {
+      if (score) return { word: normalized, score, entries}
+      else return { word: normalized, notFound: true as const };
+    }
+
 
     await db
       .insert(words)
@@ -24,7 +28,6 @@ export async function lookupWord(word: string) {
       .onConflictDoUpdate({ target: words.word, set: { entries } });
   }
 
-  const score = await getScore(normalized);
   return { word: normalized, score, entries };
 }
 
