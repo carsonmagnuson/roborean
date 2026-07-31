@@ -1,8 +1,7 @@
 # ROBOREAN
 >strong and sturdy; like an oak tree.
 
-A simple word scoring application.
-
+A simple word [scoring application](roborean.carsonmagnuson.com) (live).
 
 # STARTUP INSTRUCTIONS
 
