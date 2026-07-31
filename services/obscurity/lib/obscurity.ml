@@ -84,6 +84,18 @@ MW API call with the api key and chosen word.
 let mw_entries ~api_key word = 
   http_get (mw_uri ~api_key word)
 
+(** 'special' words with no Merriam-Webster entry that we still want to define. Checked
+    before the upstream call.
+*)
+let local_entries =
+  [ ("roborean",
+     [ ("adjective", [ "strong; like an oak. Coincidentally, also the name of this website." ]) ]) ]
+
+let local_def word =
+  List.assoc_opt (String.lowercase_ascii word) local_entries
+
+
+
 (** [short_def body] extracts the first entry's short definitions from a raw
     Merriam-Webster collegiate JSON response. Returns [Ok defs] on success,
     [Error `Not_found_with_suggestions] when MW returns spelling suggestions,
