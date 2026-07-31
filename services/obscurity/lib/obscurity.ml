@@ -3,6 +3,14 @@
  *)
 let obscurity count total = count /. total *. 1e9 |> log10 |> ( -. ) 8.
 
+let min_fpm = 1e-6
+
+(** [obscurity_of_fpm f] maps a Datamuse frequency (occurrences per million
+    words) onto the same scale as [obscurity]. Per-million x 1e3 = per-billion,
+    which is the unit [obscurity] normalizes to internally. *)
+let obscurity_of_fpm f = 
+  let f = if f < min_fpm then min_fpm else f in 8. -. log10 (f *. 1e3)
+
 (** 
     [load_table path] reads a tab-separated [word\tcount] frequency file
     and returns a hashtable mapping each word to its total occurrences.     
@@ -24,11 +32,6 @@ let load_table path =
 
 let ( let* ) = Lwt.bind
 
-(*
-This function performs an HTTP GET request to a given URL and handles the response.
-It returns a Result type: Ok with the response body if successful, or Error with an error message.
---from OCaml docs
-*)
 
 let http_get uri =
   let* (resp, body) =
@@ -86,7 +89,7 @@ let mw_entries ~api_key word =
     [Error `Not_found_with_suggestions] when MW returns spelling suggestions,
     or [Error `Bad_response] on any unexpected shape. *)
 let short_def word body =
-  let open Yojson.Basic.Util in
+  let open Yojson.Basic.Util in 
   let headword_matches entry =
     match entry |> member "meta" |> member "id" with
     | `String id ->
@@ -114,6 +117,38 @@ let short_def word body =
       in
       Ok matched
   | `List (`String _ :: _) -> Error `Not_found_with_suggestions
+  | _ -> Error `Bad_response
+  | exception Yojson.Json_error _ -> Error `Bad_response
+
+(** [muse_freq word body] extracts the frequency (occurrences per million words)
+    for [word] from a raw Datamuse JSON response. Returns [Ok f] on success,
+    [Error `Not_in_vocab] when Datamuse has no matching entry,
+    [Error `No_frequency] when the entry carries no [f:] tag, or
+    [Error `Bad_response] on any unexpected shape. 
+*)
+let frequency word body =
+  let open Yojson.Basic.Util in
+  let freq_of_tag tag =
+    match String.split_on_char ':' tag with
+    | [ "f"; value ] -> float_of_string_opt value
+    | _ -> None
+  in
+  match Yojson.Basic.from_string body with
+  | `List [] -> Error `Not_in_vocab
+  | `List ((`Assoc _ as entry) :: _) ->
+      let matches =
+        match entry |> member "word" with
+        | `String w -> String.lowercase_ascii w = String.lowercase_ascii word
+        | _ -> false
+      in
+      if not matches then Error `Not_in_vocab
+      else (
+        match entry |> member "tags" with
+        | `List tags -> (
+            match List.find_map freq_of_tag (filter_string tags) with
+            | Some f -> Ok f
+            | None -> Error `No_frequency)
+        | _ -> Error `No_frequency)
   | _ -> Error `Bad_response
   | exception Yojson.Json_error _ -> Error `Bad_response
 
