@@ -20,6 +20,10 @@ docker compose up --build
 ```
 - Enjoy a coffee while it spins up.
 
+# CURRENT ARCHITECTURE
+![Roborean Architecture](roborean-architecture.excalidraw.svg)
+>Plans to deprecate local frequency corpus in favor of cached frequency scores from soon-to-be-added Datamuse API.
+
 
 
 
