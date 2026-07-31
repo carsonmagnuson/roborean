@@ -17,7 +17,7 @@ export async function lookupWord(word: string) {
   if (!entries) {
     entries = await fetchDefinition(normalized);
     if (!entries) {
-      if (score) return { word: normalized, score, entries}
+      if (score) return { word: normalized, score: Math.round(score * 10) / 10, entries}
       else return { word: normalized, notFound: true as const };
     }
 
@@ -28,6 +28,6 @@ export async function lookupWord(word: string) {
       .onConflictDoUpdate({ target: words.word, set: { entries } });
   }
 
-  return { word: normalized, score, entries };
+  return { word: normalized, score: score ? (Math.round(score * 10) / 10) : null, entries };
 }
 
