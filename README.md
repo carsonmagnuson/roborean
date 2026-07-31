@@ -3,7 +3,7 @@
 
 ![Roborean Preview](roborean-preview-mid.png)
 
-A simple word [scoring application](roborean.carsonmagnuson.com) (live).
+A simple word [scoring application](https://roborean.carsonmagnuson.com) (live).
 
 # STARTUP INSTRUCTIONS
 
