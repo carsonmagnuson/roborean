@@ -54,5 +54,26 @@ let () =
             Dream.json ~status:`Not_Found {|{"error": "no entry"}|}
         | Error `Bad_response ->
             Dream.json ~status:`Bad_Gateway {|{"error": "upstream shape"}|})
-      | Error e -> Dream.json ~status:`Internal_Server_Error  (Printf.sprintf {|{"error": "%s"}|} e))
+      | Error e -> Dream.json ~status:`Internal_Server_Error  (Printf.sprintf {|{"error": "%s"}|} e));
+
+    Dream.get "/muse/:word" (fun req ->
+          let word = Dream.param req "word" in
+          let* result = Obscurity.muse_entries word in
+          match result with
+          | Ok body -> (
+              match Obscurity.frequency word body with
+              | Ok f ->
+                  Dream.json (Yojson.Basic.to_string
+                    (`Assoc [ ("word", `String word);
+                              ("fpm", `Float f);
+                              ("score", `Float (Obscurity.obscurity_of_fpm f)) ]))
+              | Error `Not_in_vocab ->
+                  Dream.json ~status:`Not_Found {|{"error": "not in vocabulary"}|}
+              | Error `No_frequency ->
+                  Dream.json ~status:`Bad_Gateway {|{"error": "no frequency data"}|}
+              | Error `Bad_response ->
+                  Dream.json ~status:`Bad_Gateway {|{"error": "upstream shape"}|})
+          | Error e ->
+              Dream.error (fun log -> log "datamuse: %s" e);
+              Dream.json ~status:`Bad_Gateway {|{"error": "upstream unavailable"}|});
   ]
