@@ -24,7 +24,7 @@ let () =
       in
       Dream.json response);
 
-    Dream.get "/score/:word" (fun req ->
+    Dream.get "/score_obs/:word" (fun req ->
       let word = Dream.param req "word" in
       let response =
         match Hashtbl.find_opt table word with
@@ -56,7 +56,7 @@ let () =
             Dream.json ~status:`Bad_Gateway {|{"error": "upstream shape"}|})
       | Error e -> Dream.json ~status:`Internal_Server_Error  (Printf.sprintf {|{"error": "%s"}|} e));
 
-    Dream.get "/muse/:word" (fun req ->
+    Dream.get "/score/:word" (fun req ->
           let word = Dream.param req "word" in
           let* result = Obscurity.muse_entries word in
           match result with
@@ -65,7 +65,6 @@ let () =
               | Ok f ->
                   Dream.json (Yojson.Basic.to_string
                     (`Assoc [ ("word", `String word);
-                              ("fpm", `Float f);
                               ("score", `Float (Obscurity.obscurity_of_fpm f)) ]))
               | Error `Not_in_vocab ->
                   Dream.json ~status:`Not_Found {|{"error": "not in vocabulary"}|}
