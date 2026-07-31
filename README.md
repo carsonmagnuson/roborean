@@ -4,7 +4,7 @@
 A simple word scoring application.
 
 
-# "Quick" Start
+# STARTUP INSTRUCTIONS
 
 **Prerequisites**
 
