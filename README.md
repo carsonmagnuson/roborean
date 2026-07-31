@@ -4,21 +4,77 @@
 A simple word scoring application.
 
 
-What you need:
-- Docker Compose.
-- Buildx (plugin).
-- A [Merriam Webster](https://dictionaryapi.com/) API key (free!).
-- An open port 3000.
+## Running it
 
-How to run the application:
-- clone the repository.
-- Insert your API key (MW_API_KEY=\[YOUR KEY]) and a db password into a .env in the root directory similar to .env.example.
-- run:
+**Prerequisites**
+
+- Docker Engine with Compose v2 (check with `docker compose version`)
+- A free **Merriam-Webster Collegiate Dictionary** API key from [dictionaryapi.com](https://dictionaryapi.com/register/index)
+- Port 3000 free on host
+
+You do _not_ need Node, OCaml, or opam installed. Everything builds inside containers.
+
+**Setup**
+
 ```bash
+git clone https://github.com/carsonmagnuson/roborean.git
 cd roborean
+
+cp .env.example .env
+```
+
+Open `.env` and fill in both values:
+
+```
+MW_API_KEY=your-collegiate-dictionary-key
+POSTGRES_PASSWORD=any-password-you-like
+```
+
+The `.env` file must sit in the repository root, next to `compose.yaml`. Compose reads it automatically and will refuse to start if either variable is missing.
+
+**Start**
+
+```bash
 docker compose up --build
 ```
-- Enjoy a coffee while it spins up.
+
+Then open <http://localhost:3000>.
+
+First build can take a while (5–10 minutes) as the obscurity service compiles the OCaml toolchain and its dependencies from source. Subsequent builds are cached and take seconds.
+
+
+**Verify**
+
+```bash
+docker compose ps
+docker compose exec -T app wget -qO- http://obscurity:8080/score/hello
+docker compose exec -T app wget -qO- http://obscurity:8080/define/hello
+```
+
+The obscurity service is not published to the host and is reachable only from inside the Compose network, which is why these run through the `app` container.
+
+**Stop**
+
+```bash
+docker compose down      # keep database
+```
+
+or
+
+```bash
+docker compose down -v   # also delete Postgres volume
+```
+
+**Troubleshooting**
+
+| Symptom | Cause |
+| --- | --- |
+| `required variable POSTGRES_PASSWORD is missing` | No `.env`, or it isn't in the repo root |
+| `Failure("No API Key")` in the obscurity logs | `MW_API_KEY` unset in `.env` |
+| Scores work, definitions return errors | Wrong Merriam-Webster product — keys are issued per API, and this needs the Collegiate Dictionary |
+| `port is already allocated` | Something else is on 3000; change the host side of the port mapping in `compose.yaml` |
+
+Logs for a single service: `docker compose logs obscurity`
 
 # CURRENT ARCHITECTURE
 ![Roborean Architecture](roborean-architecture.excalidraw.svg)
