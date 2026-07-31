@@ -37,7 +37,7 @@ let () =
 
     Dream.get "/define/:word" (fun req ->
       let word = Dream.param req "word" in
-      let* result = Obscurity.fetch_entry ~api_key word in
+      let* result = Obscurity.mw_entries ~api_key word in
       match result with
       | Ok body -> (
         match Obscurity.short_def word body with

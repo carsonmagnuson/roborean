@@ -30,9 +30,9 @@ It returns a Result type: Ok with the response body if successful, or Error with
 --from OCaml docs
 *)
 
-let http_get url =
+let http_get uri =
   let* (resp, body) =
-    Cohttp_lwt_unix.Client.get (Uri.of_string url)
+    Cohttp_lwt_unix.Client.get uri
   in
   let code = resp
              |> Cohttp.Response.status
@@ -46,25 +46,40 @@ let http_get url =
       Cohttp.Code.reason_phrase_of_code code
     ))
 
+(*
+Muse uri encoder
+*)
+let muse_uri word =
+  Uri.make
+    ~scheme:"https"
+    ~host:"api.datamuse.com"
+    ~path:"/words"
+    ~query:[ ("sp", [word]); ("md", ["f"]); ("max", ["1"]) ]
+    ()
 
-let fetch_muse word =
-  let url =
-    Printf.sprintf
-    "https://api.datamuse.com/words?sp=%s&md=f&max=1"
-    (Uri.pct_encode word)
-  in
-  http_get url
 
 (*
-API call with the api key and chosen word.
+Datamuse API call for chosen word frequency
 *)
-let fetch_entry ~api_key word = 
-  let url =
-    Printf.sprintf
-      "https://www.dictionaryapi.com/api/v3/references/collegiate/json/%s?key=%s"
-      (Uri.pct_encode word) api_key
-  in
-  http_get url
+let muse_entries word = http_get (muse_uri word)
+
+
+(*
+MW uri encoder
+*)
+let mw_uri ~api_key word =
+  Uri.make 
+    ~scheme:"https" 
+    ~host:"www.dictionaryapi.com" 
+    ~path:("/api/v3/references/collegiate/json/" ^ Uri.pct_encode ~component: `Generic word) 
+    ~query: [ ("key", [api_key])]
+  ()
+
+(*
+MW API call with the api key and chosen word.
+*)
+let mw_entries ~api_key word = 
+  http_get (mw_uri ~api_key word)
 
 (** [short_def body] extracts the first entry's short definitions from a raw
     Merriam-Webster collegiate JSON response. Returns [Ok defs] on success,
