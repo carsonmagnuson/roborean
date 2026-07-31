@@ -4,7 +4,7 @@
 A simple word scoring application.
 
 
-## Running it
+# "Quick" Start
 
 **Prerequisites**
 
@@ -40,7 +40,7 @@ docker compose up --build
 
 Then open <http://localhost:3000>.
 
-First build can take a while (5–10 minutes) as the obscurity service compiles the OCaml toolchain and its dependencies from source. Subsequent builds are cached and take seconds.
+First build can take a while (5–10 minutes) as the obscurity service compiles the OCaml toolchain and its dependencies from source. Subsequent builds are cached so should be faster.
 
 
 **Verify**
@@ -62,7 +62,7 @@ docker compose down      # keep database
 or
 
 ```bash
-docker compose down -v   # also delete Postgres volume
+docker compose down -v   # delete Postgres volume
 ```
 
 **Troubleshooting**
