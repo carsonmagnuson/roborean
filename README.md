@@ -1,7 +1,7 @@
 # ROBOREAN
 >strong and sturdy; like an oak tree.
 
-![Roborean Preview](roborean-preview-mid.png)
+![Roborean Preview](docs/roborean-preview-mid.png)
 
 A simple word [scoring application](https://roborean.carsonmagnuson.com) (live).
 
@@ -78,7 +78,7 @@ docker compose down -v   # delete Postgres volume
 Logs for a single service: `docker compose logs obscurity`
 
 # CURRENT ARCHITECTURE
-![Roborean Architecture](roborean-architecture.excalidraw.svg)
+![Roborean Architecture](docs/roborean-architecture.excalidraw.svg)
 >Plans to deprecate local frequency corpus in favor of cached frequency scores from soon-to-be-added Datamuse API.
 
 
