@@ -79,7 +79,8 @@ Logs for a single service: `docker compose logs obscurity`
 
 # CURRENT ARCHITECTURE
 ![Roborean Architecture](docs/roborean-architecture.excalidraw.svg)
->Plans to deprecate local frequency corpus in favor of cached frequency scores from soon-to-be-added Datamuse API.
+_Created in Obsidian Excalidraw_
+>local frequency corpus is now deprecated in favor of frequency scores from Datamuse API. Next steps include storing frequencies locally alongside definitions and using Datamuse definitions in the case of no local or MW match.
 
 
 
