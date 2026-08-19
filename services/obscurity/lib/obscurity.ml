@@ -11,24 +11,6 @@ let min_fpm = 1e-6
 let obscurity_of_fpm f = 
   let f = if f < min_fpm then min_fpm else f in 8. -. log10 (f *. 1e3)
 
-(** 
-    [load_table path] reads a tab-separated [word\tcount] frequency file
-    and returns a hashtable mapping each word to its total occurrences.     
-*)
-let load_table path = 
-  let lines = In_channel.with_open_text path In_channel.input_lines in
-  let table = Hashtbl.create 400_000 in
-  List.iter
-    (fun line ->
-      match String.split_on_char '\t' line with
-      | [word; count] -> (
-        match int_of_string_opt count with
-        | Some n -> Hashtbl.add table word n
-        | None -> ())
-      | _ -> ())
-    lines;
-  table  
-
 
 let ( let* ) = Lwt.bind
 
