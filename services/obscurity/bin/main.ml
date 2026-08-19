@@ -1,4 +1,3 @@
-let table = Obscurity.load_table "data/count_1w.txt"
 let ( let* ) = Lwt.bind 
 
 let define_json word entries =
@@ -23,26 +22,6 @@ let () =
   @@ Dream.router [
     Dream.get "/" (fun _req ->
       Dream.html "obscurity service lives");
-
-    Dream.get "/freq/:word" (fun req ->
-      let word = Dream.param req "word" in
-      let response =
-        match Hashtbl.find_opt table word with
-        | Some count -> Printf.sprintf {|{"word": "%s", "count": %d}|} word count
-        | None -> Printf.sprintf {|{"word": "%s", "count": "not found in corpus"}|} word
-      in
-      Dream.json response);
-
-    Dream.get "/score_obs/:word" (fun req ->
-      let word = Dream.param req "word" in
-      let response =
-        match Hashtbl.find_opt table word with
-        | Some count -> 
-            let c = Obscurity.obscurity (float_of_int count) 1_024_908_267_229.0 in 
-            Printf.sprintf {|{"word": "%s", "score": %f}|} word c
-        | None -> Printf.sprintf {|{"word": "%s", "score": "not found in corpus"}|} word
-      in
-      Dream.json response);
 
   Dream.get "/define/:word" (fun req ->
         let word = Dream.param req "word" in
